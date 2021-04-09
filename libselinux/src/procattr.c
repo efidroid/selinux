@@ -33,7 +33,7 @@ static int __selinux_atfork (void (*prepare) (void), void (*parent) (void), void
                             &__dso_handle == NULL ? NULL : __dso_handle);
 }
 
-static pid_t gettid(void)
+static pid_t local_gettid(void)
 {
 	return syscall(__NR_gettid);
 }
@@ -96,7 +96,7 @@ static int openattr(pid_t pid, const char *attr, int flags)
 		rc = asprintf(&path, "/proc/%d/attr/%s", pid, attr);
 	else {
 		if (!tid)
-			tid = gettid();
+			tid = local_gettid();
 		rc = asprintf(&path, "/proc/self/task/%d/attr/%s", tid, attr);
 	}
 	if (rc < 0)

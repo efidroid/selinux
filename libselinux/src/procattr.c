@@ -22,7 +22,7 @@ static pthread_key_t destructor_key;
 static int destructor_key_initialized = 0;
 static __thread char destructor_initialized;
 
-static pid_t gettid(void)
+static pid_t local_gettid(void)
 {
 	return syscall(__NR_gettid);
 }
@@ -80,7 +80,7 @@ static int openattr(pid_t pid, const char *attr, int flags)
 		if (fd >= 0 || errno != ENOENT)
 			goto out;
 		free(path);
-		tid = gettid();
+		tid = local_gettid();
 		rc = asprintf(&path, "/proc/self/task/%d/attr/%s", tid, attr);
 	}
 	if (rc < 0)
